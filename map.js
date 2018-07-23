@@ -3,18 +3,17 @@ var latitude = null;
 var longitude = null;
 var map = null;
 var marker = null;
+var descriptionToMarker;
 
 function getMapData() {   
     // initialize the map
     if(map == null) {
         map = L.map('map').setView([latitude, longitude], 12);
-        marker = L.marker([latitude, longitude]);
+        marker = new L.marker([latitude, longitude]);
     }
     else {
-        map.remove();
-        map.removeLayer(marker)
-        map = L.map('map').setView([latitude, longitude], 12);
-        marker = L.marker([latitude, longitude]);
+        map.setView(new L.LatLng(latitude, longitude), 12);
+        marker = new L.marker([latitude, longitude]);
     }
 
     // load a tile layer
@@ -22,9 +21,10 @@ function getMapData() {
     {
         attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
         maxZoom: 20,
-        minZoom: 10
+        minZoom: 5
     }).addTo(map);
 
+    marker.bindPopup(descriptionToMarker).openPopup();
     marker.addTo(map);
 }
 
@@ -48,14 +48,17 @@ function getJSONfromURL() {
         <li>ORG: ${json.org}</li>\
         </ul>`;
     
+        descriptionToMarker = `<b>IP: ${json.ip}</b> <b>HOSTNAME: ${json.hostname}</b> \
+        <b>CITY: ${json.city}</b> <b>REGION: ${json.region}</b> \
+        <b>COUNTRY: ${json.country}</b> <b>ORG: ${json.org}</b>`;
+
         getMapData();
     });
 }
 
 function defaultView() {
-    urlGetIP = 'http://ipinfo.io/91.198.174.192/json';
-    
-    getJSONfromURL();
+    document.getElementById('serv_info_pos').innerHTML = '<p>Create by eaglx:</p><a href="https://github.com/eaglx">github repository</a>';
+    document.getElementById('map').innerHTML = '<img src="https://wiki.openstreetmap.org/w/images/2/26/Wiki-katpatuka.png" style="width:800px;height:600px;">';
 }
 
 function getMap() {
