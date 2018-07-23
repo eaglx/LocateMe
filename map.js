@@ -6,7 +6,6 @@ var marker = null;
 var descriptionToMarker;
 
 function getMapData() {   
-    // initialize the map
     if(map == null) {
         map = L.map('map').setView([latitude, longitude], 12);
         marker = new L.marker([latitude, longitude]);
@@ -16,16 +15,33 @@ function getMapData() {
         marker = new L.marker([latitude, longitude]);
     }
 
-    // load a tile layer
-    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    {
-        attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
-        maxZoom: 20,
+    mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+    L.tileLayer(
+        'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; ' + mapLink + ' Contributors',
+        maxZoom: 18,
         minZoom: 5
     }).addTo(map);
 
+
     marker.bindPopup(descriptionToMarker).openPopup();
     marker.addTo(map);
+
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    var drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: drawnItems
+        }
+    });
+    map.addControl(drawControl);
+
+    map.on('draw:created', function (e) {
+        var type = e.layerType,
+            layer = e.layer;
+        drawnItems.addLayer(layer);
+    });
 }
 
 function getJSONfromURL() {
