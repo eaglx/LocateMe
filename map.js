@@ -4,11 +4,13 @@ var longitude = null;
 var map = null;
 var marker = null;
 var descriptionToMarker;
+var first_set_map = false;
 
-function getMapData() {   
+function getMapData() {  
     if(map == null) {
         map = L.map('map').setView([latitude, longitude], 12);
         marker = new L.marker([latitude, longitude]);
+        first_set = true;
     }
     else {
         map.setView(new L.LatLng(latitude, longitude), 12);
@@ -27,21 +29,24 @@ function getMapData() {
     marker.bindPopup(descriptionToMarker).openPopup();
     marker.addTo(map);
 
-    var drawnItems = new L.FeatureGroup();
-    map.addLayer(drawnItems);
+    if(first_set) {
+        first_set = false;
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
 
-    var drawControl = new L.Control.Draw({
-        edit: {
-            featureGroup: drawnItems
-        }
-    });
-    map.addControl(drawControl);
+        var drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+        map.addControl(drawControl);
 
-    map.on('draw:created', function (e) {
-        var type = e.layerType,
-            layer = e.layer;
-        drawnItems.addLayer(layer);
-    });
+        map.on('draw:created', function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+            drawnItems.addLayer(layer);
+        });
+    }
 }
 
 function getJSONfromURL() {
