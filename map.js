@@ -1,35 +1,34 @@
-var latitude;
-var longitude;
+var urlGetIP;
+var latitude = null;
+var longitude = null;
 var map = null;
+var marker = null;
 
-function getMapData() {
-    console.log(latitude);
-    console.log(longitude);
-    
+function getMapData() {   
     // initialize the map
     if(map == null) {
-        map = L.map('map').setView([latitude, longitude], 13);
+        map = L.map('map').setView([latitude, longitude], 12);
+        marker = L.marker([latitude, longitude]);
     }
     else {
         map.remove();
-        map = L.map('map').setView([latitude, longitude], 13);
+        map.removeLayer(marker)
+        map = L.map('map').setView([latitude, longitude], 12);
+        marker = L.marker([latitude, longitude]);
     }
 
     // load a tile layer
     L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     {
         attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
-        maxZoom: 17,
-        minZoom: 9
+        maxZoom: 20,
+        minZoom: 10
     }).addTo(map);
+
+    marker.addTo(map);
 }
 
-function getMap() {
-    var stringIP = document.getElementById("inputField").value;
-    console.log(stringIP);
-    var urlGetIP = 'http://ipinfo.io/' + stringIP + '/json';
-    console.log(urlGetIP);   
-
+function getJSONfromURL() {
     fetch(urlGetIP, { 
         method: 'GET'
     })
@@ -39,6 +38,29 @@ function getMap() {
         
         latitude = (parseFloat(str.split(',')[0])).toFixed(4);
         longitude = (parseFloat(str.split(',')[1])).toFixed(4);
+    
+        document.getElementById('serv_info_pos').innerHTML = `<ul>\
+        <li>IP: ${json.ip}</li>\
+        <li>HOSTNAME: ${json.hostname}</li>\
+        <li>CITY: ${json.city}</li>\
+        <li>REGION: ${json.region}</li>\
+        <li>COUNTRY: ${json.country}</li>\
+        <li>ORG: ${json.org}</li>\
+        </ul>`;
+    
         getMapData();
     });
+}
+
+function defaultView() {
+    urlGetIP = 'http://ipinfo.io/91.198.174.192/json';
+    
+    getJSONfromURL();
+}
+
+function getMap() {
+    var stringIP = document.getElementById("inputField").value;
+    urlGetIP = 'http://ipinfo.io/' + stringIP + '/json'; 
+
+    getJSONfromURL();
 }

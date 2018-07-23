@@ -6,24 +6,24 @@
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 </head>
-<body>
+    <body onload="defaultView()">
 
-    <table>
-        <tr>
-            <th>
-                <div id="map"></div>
-            </th>
-            <th>
+        <h1>LocateMe ver. 0.01</h1>
 
-                <p></p>
-                <input id="inputField" type="text">
-                <p></p>
-                <button type="button" onclick="getMap()">GO</button>
-            </th>
-        </tr>
-    </table>
+        <div class="content">
+            <div id="map"></div>
+            <div class="user_space">
+                <div class="server_info"> 
+                    <div id="serv_info_pos"></div>
+                </div>
+                <div class="user_action">
+                    <input id="inputField" type="text">
+                    <button type="button" onclick="getMap()">GO</button>
+                </div>
+            </div>
+        </div>
+        
+        <script src="map.js"></script>
 
-  <script src="map.js"></script>
-
-</body>
+    </body>
 </html>
