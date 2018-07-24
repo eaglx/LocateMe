@@ -50,7 +50,8 @@ function getMapData() {
 }
 
 function getJSONfromURL() {
-    fetch(urlGetIP, { 
+    console.log("execute getJSONfromURL()");
+    fetch(urlGetIP, {
         method: 'GET'
     })
     .then(function(response) { return response.json(); })
@@ -74,17 +75,28 @@ function getJSONfromURL() {
         <b>COUNTRY: ${json.country}</b> <b>ORG: ${json.org}</b>`;
 
         getMapData();
-    });
+    })
+    .catch(error => console.log('error:', error));
 }
 
 function defaultView() {
     document.getElementById('serv_info_pos').innerHTML = '<p>Create by eaglx:</p><a href="https://github.com/eaglx">github repository</a>';
     document.getElementById('map').innerHTML = '<img src="https://wiki.openstreetmap.org/w/images/2/26/Wiki-katpatuka.png" style="width:800px;height:600px;">';
+
+    var win = window.open(' http://localhost:8088/terminal', '_blank');
+    if (win) {
+        //Browser has allowed it to be opened
+        win.focus();
+    } else {
+        //Browser has blocked it
+        alert('Please allow popups for this website');
+    }
 }
 
 function getMap() {
     var stringIP = document.getElementById("inputField").value;
-    urlGetIP = 'http://ipinfo.io/' + stringIP + '/json'; 
+    urlGetIP = 'http://127.0.0.1:6067/http://ipinfo.io/' + stringIP + '/json'; 
 
+    console.log('GET: ' + urlGetIP);
     getJSONfromURL();
 }
