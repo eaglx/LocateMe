@@ -6,6 +6,7 @@ var fs = require('fs');
 
 var request = require("request");
 var terminal = require("web-terminal");
+var dns = require('dns');
 
 const server = http.createServer((req, res) => {
     if(req.url === "/"){
@@ -53,6 +54,20 @@ const server = http.createServer((req, res) => {
                 res.write(JSON.stringify(jsonObject));
                 res.end();
             }
+        });
+    }else if(req.url.match("dns")){
+        var getDomainIP = (req.url).substr(5);
+        console.log('##GET IP OF: ' + getDomainIP);
+        var w3 = dns.lookup(getDomainIP, function (err, addresses, family) {
+            console.log('###: ' + addresses);
+
+            var json_d = {
+                ip_addr: '' + addresses
+            };
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.write(JSON.stringify(json_d));
+            res.end();
         });
     }else{
         res.writeHead(404, {"Content-Type": "text/html"});

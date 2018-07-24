@@ -22,7 +22,7 @@ function getMapData() {
         'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; ' + mapLink + ' Contributors',
         maxZoom: 18,
-        minZoom: 5
+        minZoom: 2
     }).addTo(map);
 
 
@@ -99,4 +99,19 @@ function getMap() {
 
     console.log('GET: ' + urlGetIP);
     getJSONfromURL();
+}
+
+function getMap_2() {
+    var domainName = document.getElementById("inputField_2").value;
+    console.log('ASK FOR IP OF: ' + domainName);
+    urlGetIP_tmp = 'http://127.0.0.1:6067/dns/' + domainName;
+    fetch(urlGetIP_tmp, {
+        method: 'GET'
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(json) {
+        urlGetIP = 'http://127.0.0.1:6067/http://ipinfo.io/' + json.ip_addr + '/json'; 
+        console.log('GET: ' + urlGetIP);
+        getJSONfromURL();
+    })
 }
